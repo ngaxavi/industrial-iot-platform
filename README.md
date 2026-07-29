@@ -2,6 +2,8 @@
 
 > A public portfolio project about telemetry ingestion, Kafka delivery semantics, hot/cold storage, and safe archival.
 
+> **Current repository status:** Documentation-only foundation. Phase 1 implementation has not landed yet.
+
 ## Overview
 
 This project implements a small industrial IoT telemetry platform for simulated pump equipment. A pump simulator publishes measurements over MQTT, the backend validates and normalizes the data, Kafka carries validated events through the pipeline, TimescaleDB stores recent telemetry, and older data is archived as Parquet files in object storage. The query API hides the physical storage layout from clients by planning HOT, COLD, or HYBRID reads and merging the results into one chronological response.
@@ -256,6 +258,3 @@ Expected target command:
 docker compose up
 ```
 
-## License
-
-License to be decided before the first public release.
