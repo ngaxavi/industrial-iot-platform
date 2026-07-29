@@ -135,7 +135,7 @@ Each phase should end with a runnable system and a tagged release. No phase shou
 - Docker Compose for local infrastructure
 - Mosquitto
 - TimescaleDB
-- Spring Boot backend base
+- Spring Boot / Quarkus backend base
 - Angular base project
 - Pump simulator stub
 - README v1
@@ -208,7 +208,7 @@ Phase 5 is the first serious portfolio milestone. If this phase works well, the 
 
 | Layer             | Technology                                              |
 |-------------------|---------------------------------------------------------|
-| Backend           | Java, Spring Boot                                       |
+| Backend           | Java, Spring Boot, Quarkus                              |
 | Build             | Gradle                                                  |
 | Frontend          | Angular                                                 |
 | Messaging         | MQTT, Mosquitto, Apache Kafka                           |
