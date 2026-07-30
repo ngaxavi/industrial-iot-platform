@@ -5,20 +5,18 @@ services:
     restart: unless-stopped
     environment:
       PGDATA: /pgdata
-      POSTGRES_PASSWORD: iiot
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - ./timescaledb:/pgdata
 
   mosquitto:
-    image: eclipse-mosquitto:latest
+    image: eclipse-mosquitto:2.1.2
     container_name: mosquitto
     restart: unless-stopped
     ports:
       - "1883:1883"    # MQTT
-      - "8883:8883"    # MQTTS (secure)
-      - "9001:9001"    # WebSockets
     volumes:
       - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data

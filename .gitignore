@@ -24,3 +24,9 @@ hs_err_pid*
 replay_pid*
 
 .idea
+
+infrastructure/timescaledb/
+infrastructure/mosquitto/data/
+infrastructure/mosquitto/log/
+
+.env
