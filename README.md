@@ -2,7 +2,7 @@
 
 > A public portfolio project about telemetry ingestion, Kafka delivery semantics, hot/cold storage, and safe archival.
 
-> **Current repository status:** Documentation-only foundation. Phase 1 implementation has not landed yet.
+> **Current repository status:** Phase 1 skeleton in progress: local infrastructure and application shells are being implemented.
 
 ## Overview
 

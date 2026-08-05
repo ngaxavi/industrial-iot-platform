@@ -1,0 +1,93 @@
+quarkus:
+  application:
+    name: pump-simulator
+  http:
+    port: 8081
+  jackson:
+    # ISO-8601 instants, not epoch numbers — event time must stay readable
+    # and unambiguous across the ingestion boundary.
+    write-dates-as-timestamps: false
+  log:
+    category:
+      "com.ngaxavilabs.simulator":
+        level: INFO
+
+# --- MQTT transport --------------------------------------------------------
+# The topic is set per message from the pump spec, so the channel-level topic
+# below is only a fallback. QoS 1 (at-least-once) per the minimum viable spec:
+# the ingestion service is expected to deduplicate on messageId.
+mp:
+  messaging:
+    outgoing:
+      pump-telemetry:
+        connector: smallrye-mqtt
+        host: ${MQTT_HOST:localhost}
+        port: ${MQTT_PORT:1883}
+        client-id: pump-simulator
+        topic: tenant/unknown/site/unknown/equipment/unknown/telemetry
+        qos: 1
+        auto-generated-client-id: false
+        reconnect-attempts: 200
+        reconnect-interval-seconds: 5
+
+# --- Simulator -------------------------------------------------------------
+simulator:
+  enabled: true
+  # Master seed: the same seed replays the same fleet, byte for byte in the
+  # measurement stream. Change it to get a different but equally valid run.
+  seed: 42
+  schema-version: "1.0.0"
+  ambient-temperature-c: 25.0
+
+  # Transport faults are global and independent of pump health (section 6).
+  # All zero by default: a clean pipe until a test asks for otherwise.
+  delivery:
+    duplicate-probability: 0.0
+    late-probability: 0.0
+    late-delay-ms: 5000
+    out-of-order-probability: 0.0
+    drop-probability: 0.0
+
+  # Fleet. Map key is the equipmentId. Every field has a default, so a pump
+  # only needs to declare what differs from a stock 7.5 kW centrifugal unit.
+  pumps:
+    pump-001:
+      tenant-id: tenant-a
+      site-id: plant-01
+      rated-flow-m3h: 50
+      bep-flow-m3h: 45
+      rated-head-m: 40
+      rated-speed-rpm: 1450
+      rated-power-kw: 7.5
+      sample-interval-ms: 1000
+      scenario: NORMAL
+      auto-start: true
+
+    pump-002:
+      tenant-id: tenant-a
+      site-id: plant-01
+      rated-flow-m3h: 80
+      bep-flow-m3h: 72
+      rated-head-m: 55
+      rated-speed-rpm: 2900
+      rated-power-kw: 18.5
+      sample-interval-ms: 1000
+      # Slow degradation: ~30 min from healthy to trip.
+      scenario: BEARING_WEAR
+      scenario-ramp-seconds: 1800
+      auto-start: true
+
+    pump-003:
+      tenant-id: tenant-b
+      site-id: plant-02
+      rated-flow-m3h: 120
+      bep-flow-m3h: 110
+      rated-head-m: 32
+      rated-speed-rpm: 1450
+      rated-power-kw: 15.0
+      sample-interval-ms: 1000
+      # Faster fault: ~10 min, spiky vibration signature.
+      scenario: CAVITATION
+      scenario-ramp-seconds: 600
+      speed-ratio: 0.9
+      auto-start: true
